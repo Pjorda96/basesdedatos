@@ -87,7 +87,21 @@ DELIMITER //
 CREATE TRIGGER `interpreta_BI_TRIGGER` BEFORE INSERT ON `interpreta` FOR EACH ROW BEGIN
 UPDATE concierto
 set num_obras=num_obras+1
-where interpreta.id_concierto=id_concierto;
+where id_concierto=new.id_concierto;
+END//
+DELIMITER ;
+SET SQL_MODE=@OLDTMP_SQL_MODE;
+
+-- Volcando estructura para disparador cursosveranopiano.interpreta_BU_TRIGGER
+SET @OLDTMP_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION';
+DELIMITER //
+CREATE TRIGGER `interpreta_BU_TRIGGER` BEFORE UPDATE ON `interpreta` FOR EACH ROW BEGIN
+UPDATE concierto
+set num_obras=num_obras+1
+where id_concierto=new.id_concierto;
+UPDATE concierto
+set num_obras=num_obras-1
+where id_concierto=old.id_concierto;
 END//
 DELIMITER ;
 SET SQL_MODE=@OLDTMP_SQL_MODE;

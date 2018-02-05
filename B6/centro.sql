@@ -18,11 +18,11 @@ USE `centro`;
 
 -- Volcando estructura para tabla centro.alumno
 CREATE TABLE IF NOT EXISTS `alumno` (
-  `inAlumno` int(11) NOT NULL AUTO_INCREMENT,
+  `idAlumno` int(11) NOT NULL AUTO_INCREMENT,
   `nombre` varchar(50) COLLATE latin1_spanish_ci DEFAULT '0',
   `calificacion` double DEFAULT '0',
-  PRIMARY KEY (`inAlumno`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1 COLLATE=latin1_spanish_ci;
+  PRIMARY KEY (`idAlumno`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_spanish_ci;
 
 -- La exportación de datos fue deseleccionada.
 -- Volcando estructura para tabla centro.asignatura
@@ -30,21 +30,40 @@ CREATE TABLE IF NOT EXISTS `asignatura` (
   `idAsignatura` int(11) NOT NULL AUTO_INCREMENT,
   `nombre` varchar(50) COLLATE latin1_spanish_ci NOT NULL DEFAULT '0',
   PRIMARY KEY (`idAsignatura`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1 COLLATE=latin1_spanish_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_spanish_ci;
 
 -- La exportación de datos fue deseleccionada.
 -- Volcando estructura para tabla centro.nota
 CREATE TABLE IF NOT EXISTS `nota` (
-  `isAlumno` int(11) NOT NULL,
+  `idAlumno` int(11) NOT NULL,
   `idAsignatura` int(11) NOT NULL,
   `nota` int(11) DEFAULT NULL,
-  PRIMARY KEY (`isAlumno`,`idAsignatura`),
+  PRIMARY KEY (`idAlumno`,`idAsignatura`),
   KEY `asignatura` (`idAsignatura`),
-  CONSTRAINT `alumno` FOREIGN KEY (`isAlumno`) REFERENCES `alumno` (`inAlumno`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `alumno` FOREIGN KEY (`idAlumno`) REFERENCES `alumno` (`idAlumno`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `asignatura` FOREIGN KEY (`idAsignatura`) REFERENCES `asignatura` (`idAsignatura`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_spanish_ci;
 
 -- La exportación de datos fue deseleccionada.
+-- Volcando estructura para disparador centro.nota_BI_TRIGGER
+SET @OLDTMP_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION';
+DELIMITER //
+CREATE TRIGGER `nota_BI_TRIGGER` BEFORE INSERT ON `nota` FOR EACH ROW BEGIN
+DECLARE notaMedia FLOAT;
+DECLARE comentario VARCHAR(100);
+
+select avg(mark) into notaMedia from nota where idAlumno=new.idAlumno;
+if notaMedia<5 then set comentario='Suspenso';
+elseif notaMedia>=5 and notaMedia<6 then set comentario='Suficiente';
+elseif notaMedia>=6 and notaMedia<7 then set comentario='Bien';
+elseif notaMedia>=7 and notaMedia<9 then set comentario='Notable';
+elseif notaMedia>=9 and notaMedia<=10 then set comentario='Sobresaliente';
+end if;
+UPDATE alumno set calificacion=comentario where idAlumno=new.idAlumno;
+END//
+DELIMITER ;
+SET SQL_MODE=@OLDTMP_SQL_MODE;
+
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
 /*!40014 SET FOREIGN_KEY_CHECKS=IF(@OLD_FOREIGN_KEY_CHECKS IS NULL, 1, @OLD_FOREIGN_KEY_CHECKS) */;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
