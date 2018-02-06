@@ -101,10 +101,10 @@ SET @OLDTMP_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTIT
 DELIMITER //
 CREATE TRIGGER `partido_AI_TRIGGER` AFTER INSERT ON `partido` FOR EACH ROW BEGIN
 UPDATE equipo
- set puntos=new.punt_local
+ set puntos=id_equipo+new.punt_local
  where id_equipo=new.punt_local;
 UPDATE equipo
- set puntos=punt_visitante
+ set puntos=id_equipo+punt_visitante
  where id_equipo=new.punt_visitante;
 END//
 DELIMITER ;
