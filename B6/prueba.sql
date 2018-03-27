@@ -29,6 +29,69 @@ UPDATE clientes
 END//
 DELIMITER ;
 
+-- Volcando estructura para función prueba.Calculabono
+DELIMITER //
+CREATE DEFINER=`root`@`localhost` FUNCTION `Calculabono`(salario_basico float) RETURNS float
+    DETERMINISTIC
+BEGIN
+	DECLARE bono FLOAT;
+	SET bono = salario_basico*8/100;
+	RETURN 	bono;
+END//
+DELIMITER ;
+
+-- Volcando estructura para función prueba.Calculapension
+DELIMITER //
+CREATE DEFINER=`root`@`localhost` FUNCTION `Calculapension`(salario_basico float) RETURNS float
+    DETERMINISTIC
+BEGIN
+	DECLARE pension FLOAT;
+	SET pension = salario_basico*4/100;
+	RETURN 	pension;
+END//
+DELIMITER ;
+
+-- Volcando estructura para función prueba.Calculasalario_integral
+DELIMITER //
+CREATE DEFINER=`root`@`localhost` FUNCTION `Calculasalario_integral`(salario_basico float, 
+salud float, pension float, bono 
+float, subsidio float) RETURNS float
+    DETERMINISTIC
+BEGIN
+	DECLARE salario_integral FLOAT;
+	DECLARE salud FLOAT;
+	DECLARE pension FLOAT;
+	DECLARE bono FLOAT;
+	DECLARE subsidio FLOAT;
+	SET salario_integral = salario_basico-salud-pension+bono+subsidio;
+	RETURN 	salario_integral;
+END//
+DELIMITER ;
+
+-- Volcando estructura para función prueba.Calculasalud
+DELIMITER //
+CREATE DEFINER=`root`@`localhost` FUNCTION `Calculasalud`(salario_basico float) RETURNS float
+    DETERMINISTIC
+BEGIN
+	DECLARE salud FLOAT;
+	SET salud = salario_basico*4/100;
+	RETURN 	salud;
+END//
+DELIMITER ;
+
+-- Volcando estructura para función prueba.Calculasubsidio
+DELIMITER //
+CREATE DEFINER=`root`@`localhost` FUNCTION `Calculasubsidio`(
+	`salario_basico` float
+) RETURNS float
+    DETERMINISTIC
+BEGIN
+	DECLARE subsidio FLOAT;
+	SET subsidio = salario_basico*7/100;
+	RETURN 	subsidio;
+END//
+DELIMITER ;
+
 -- Volcando estructura para tabla prueba.clientes
 CREATE TABLE IF NOT EXISTS `clientes` (
   `cedula` varchar(50) COLLATE latin1_spanish_ci NOT NULL,
@@ -36,10 +99,7 @@ CREATE TABLE IF NOT EXISTS `clientes` (
   `apellido` varchar(50) COLLATE latin1_spanish_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_spanish_ci;
 
--- Volcando datos para la tabla prueba.clientes: ~0 rows (aproximadamente)
-/*!40000 ALTER TABLE `clientes` DISABLE KEYS */;
-/*!40000 ALTER TABLE `clientes` ENABLE KEYS */;
-
+-- La exportación de datos fue deseleccionada.
 -- Volcando estructura para procedimiento prueba.Decidirdimension
 DELIMITER //
 CREATE DEFINER=`root`@`localhost` PROCEDURE `Decidirdimension`(IN altura INTEGER)
@@ -64,14 +124,7 @@ CREATE TABLE IF NOT EXISTS `dimension` (
   `tamano` varchar(15) COLLATE latin1_spanish_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_spanish_ci;
 
--- Volcando datos para la tabla prueba.dimension: ~2 rows (aproximadamente)
-/*!40000 ALTER TABLE `dimension` DISABLE KEYS */;
-INSERT INTO `dimension` (`altura`, `tamano`) VALUES
-	(5, 'pequeño'),
-	(8, 'mediano'),
-	(25, 'grande');
-/*!40000 ALTER TABLE `dimension` ENABLE KEYS */;
-
+-- La exportación de datos fue deseleccionada.
 -- Volcando estructura para procedimiento prueba.Eliminarcliente
 DELIMITER //
 CREATE DEFINER=`root`@`localhost` PROCEDURE `Eliminarcliente`(IN cedula VARCHAR(50))
@@ -87,16 +140,13 @@ CREATE TABLE IF NOT EXISTS `empleado` (
   `nombre` varchar(50) COLLATE latin1_spanish_ci NOT NULL,
   `salario_basico` float NOT NULL,
   `subsidio` float NOT NULL,
-  `salud` varchar(50) COLLATE latin1_spanish_ci NOT NULL,
+  `salud` float NOT NULL,
   `pension` float NOT NULL,
   `bono` float NOT NULL,
   `salario_integral` float NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_spanish_ci;
 
--- Volcando datos para la tabla prueba.empleado: ~0 rows (aproximadamente)
-/*!40000 ALTER TABLE `empleado` DISABLE KEYS */;
-/*!40000 ALTER TABLE `empleado` ENABLE KEYS */;
-
+-- La exportación de datos fue deseleccionada.
 -- Volcando estructura para procedimiento prueba.Insertarcliente
 DELIMITER //
 CREATE DEFINER=`root`@`localhost` PROCEDURE `Insertarcliente`(IN cedula VARCHAR(50),
@@ -113,10 +163,7 @@ CREATE TABLE IF NOT EXISTS `persona` (
   `estado` varchar(15) COLLATE latin1_spanish_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_spanish_ci;
 
--- Volcando datos para la tabla prueba.persona: ~0 rows (aproximadamente)
-/*!40000 ALTER TABLE `persona` DISABLE KEYS */;
-/*!40000 ALTER TABLE `persona` ENABLE KEYS */;
-
+-- La exportación de datos fue deseleccionada.
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
 /*!40014 SET FOREIGN_KEY_CHECKS=IF(@OLD_FOREIGN_KEY_CHECKS IS NULL, 1, @OLD_FOREIGN_KEY_CHECKS) */;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
