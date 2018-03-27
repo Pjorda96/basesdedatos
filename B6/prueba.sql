@@ -16,6 +16,19 @@
 CREATE DATABASE IF NOT EXISTS `prueba` /*!40100 DEFAULT CHARACTER SET latin1 COLLATE latin1_spanish_ci */;
 USE `prueba`;
 
+-- Volcando estructura para procedimiento prueba.Actualizarnombre
+DELIMITER //
+CREATE DEFINER=`root`@`localhost` PROCEDURE `Actualizarnombre`(
+	IN `cedula` VARCHAR(50),
+	IN `nombre` VARCHAR(50)
+)
+BEGIN
+UPDATE clientes
+	SET nombre=nombre
+	where cedula=cedula;
+END//
+DELIMITER ;
+
 -- Volcando estructura para tabla prueba.clientes
 CREATE TABLE IF NOT EXISTS `clientes` (
   `cedula` varchar(50) COLLATE latin1_spanish_ci NOT NULL,
@@ -51,13 +64,38 @@ CREATE TABLE IF NOT EXISTS `dimension` (
   `tamano` varchar(15) COLLATE latin1_spanish_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_spanish_ci;
 
--- Volcando datos para la tabla prueba.dimension: ~3 rows (aproximadamente)
+-- Volcando datos para la tabla prueba.dimension: ~2 rows (aproximadamente)
 /*!40000 ALTER TABLE `dimension` DISABLE KEYS */;
 INSERT INTO `dimension` (`altura`, `tamano`) VALUES
 	(5, 'pequeño'),
 	(8, 'mediano'),
 	(25, 'grande');
 /*!40000 ALTER TABLE `dimension` ENABLE KEYS */;
+
+-- Volcando estructura para procedimiento prueba.Eliminarcliente
+DELIMITER //
+CREATE DEFINER=`root`@`localhost` PROCEDURE `Eliminarcliente`(IN cedula VARCHAR(50))
+BEGIN
+	DELETE FROM clientes
+	WHERE cedula=cedula;
+END//
+DELIMITER ;
+
+-- Volcando estructura para tabla prueba.empleado
+CREATE TABLE IF NOT EXISTS `empleado` (
+  `cedula` varchar(50) COLLATE latin1_spanish_ci NOT NULL,
+  `nombre` varchar(50) COLLATE latin1_spanish_ci NOT NULL,
+  `salario_basico` float NOT NULL,
+  `subsidio` float NOT NULL,
+  `salud` varchar(50) COLLATE latin1_spanish_ci NOT NULL,
+  `pension` float NOT NULL,
+  `bono` float NOT NULL,
+  `salario_integral` float NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_spanish_ci;
+
+-- Volcando datos para la tabla prueba.empleado: ~0 rows (aproximadamente)
+/*!40000 ALTER TABLE `empleado` DISABLE KEYS */;
+/*!40000 ALTER TABLE `empleado` ENABLE KEYS */;
 
 -- Volcando estructura para procedimiento prueba.Insertarcliente
 DELIMITER //
@@ -66,17 +104,6 @@ IN nombre VARCHAR(50),
 IN apellido VARCHAR(50))
 BEGIN
 	INSERT INTO clientes VALUES (cedula, nombre, apellido);
-END//
-DELIMITER ;
-
--- Volcando estructura para procedimiento prueba.Modificarnombre
-DELIMITER //
-CREATE DEFINER=`root`@`localhost` PROCEDURE `Modificarnombre`(IN cedula VARCHAR(50),
-IN nombre VARCHAR(50))
-BEGIN
-UPDATE clientes
-	SET nombre=nombre
-	where cedula=cedula;
 END//
 DELIMITER ;
 
