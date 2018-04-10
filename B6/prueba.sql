@@ -99,7 +99,10 @@ CREATE TABLE IF NOT EXISTS `clientes` (
   `apellido` varchar(50) COLLATE latin1_spanish_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_spanish_ci;
 
--- La exportación de datos fue deseleccionada.
+-- Volcando datos para la tabla prueba.clientes: ~0 rows (aproximadamente)
+/*!40000 ALTER TABLE `clientes` DISABLE KEYS */;
+/*!40000 ALTER TABLE `clientes` ENABLE KEYS */;
+
 -- Volcando estructura para procedimiento prueba.Decidirdimension
 DELIMITER //
 CREATE DEFINER=`root`@`localhost` PROCEDURE `Decidirdimension`(IN altura INTEGER)
@@ -124,7 +127,10 @@ CREATE TABLE IF NOT EXISTS `dimension` (
   `tamano` varchar(15) COLLATE latin1_spanish_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_spanish_ci;
 
--- La exportación de datos fue deseleccionada.
+-- Volcando datos para la tabla prueba.dimension: ~0 rows (aproximadamente)
+/*!40000 ALTER TABLE `dimension` DISABLE KEYS */;
+/*!40000 ALTER TABLE `dimension` ENABLE KEYS */;
+
 -- Volcando estructura para procedimiento prueba.Eliminarcliente
 DELIMITER //
 CREATE DEFINER=`root`@`localhost` PROCEDURE `Eliminarcliente`(IN cedula VARCHAR(50))
@@ -146,7 +152,10 @@ CREATE TABLE IF NOT EXISTS `empleado` (
   `salario_integral` float NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_spanish_ci;
 
--- La exportación de datos fue deseleccionada.
+-- Volcando datos para la tabla prueba.empleado: ~0 rows (aproximadamente)
+/*!40000 ALTER TABLE `empleado` DISABLE KEYS */;
+/*!40000 ALTER TABLE `empleado` ENABLE KEYS */;
+
 -- Volcando estructura para procedimiento prueba.Insertarcliente
 DELIMITER //
 CREATE DEFINER=`root`@`localhost` PROCEDURE `Insertarcliente`(IN cedula VARCHAR(50),
@@ -157,13 +166,30 @@ BEGIN
 END//
 DELIMITER ;
 
+-- Volcando estructura para procedimiento prueba.Insertarvalores
+DELIMITER //
+CREATE DEFINER=`root`@`localhost` PROCEDURE `Insertarvalores`(
+	IN `cedula` VARCHAR(50),
+	IN `nombre` VARCHAR(50),
+	IN `salario_basico` FLOAT
+)
+BEGIN
+INSERT INTO empleado VALUES (cedula, nombre, salario_basico, Calculasubsidio(salario_basico),Calculasalud(salario_basico),
+	Calculapension(salario_basico),Calculabono(salario_basico),
+	Calculasalario_integral(salario_basico));
+END//
+DELIMITER ;
+
 -- Volcando estructura para tabla prueba.persona
 CREATE TABLE IF NOT EXISTS `persona` (
   `peso` int(11) NOT NULL,
   `estado` varchar(15) COLLATE latin1_spanish_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_spanish_ci;
 
--- La exportación de datos fue deseleccionada.
+-- Volcando datos para la tabla prueba.persona: ~0 rows (aproximadamente)
+/*!40000 ALTER TABLE `persona` DISABLE KEYS */;
+/*!40000 ALTER TABLE `persona` ENABLE KEYS */;
+
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
 /*!40014 SET FOREIGN_KEY_CHECKS=IF(@OLD_FOREIGN_KEY_CHECKS IS NULL, 1, @OLD_FOREIGN_KEY_CHECKS) */;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
