@@ -1,6 +1,6 @@
 -- --------------------------------------------------------
 -- Host:                         127.0.0.1
--- Versión del servidor:         10.1.30-MariaDB - mariadb.org binary distribution
+-- Versión del servidor:         10.1.26-MariaDB - mariadb.org binary distribution
 -- SO del servidor:              Win32
 -- HeidiSQL Versión:             9.5.0.5196
 -- --------------------------------------------------------
@@ -16,6 +16,79 @@
 CREATE DATABASE IF NOT EXISTS `seguridad` /*!40100 DEFAULT CHARACTER SET latin1 COLLATE latin1_spanish_ci */;
 USE `seguridad`;
 
+-- Volcando estructura para procedimiento seguridad.actualizar_delitos_nacion
+DELIMITER //
+CREATE DEFINER=`root`@`localhost` PROCEDURE `actualizar_delitos_nacion`(
+	IN `nac` INT
+)
+BEGIN
+
+declare pais int;
+set pais=(select count(*)
+from detencion natural join delincuente
+where delincuente.nacionalidad=nac);
+
+update nacion set total_delitos=pais
+where id=nac;
+ 
+
+END//
+DELIMITER ;
+
+-- Volcando estructura para procedimiento seguridad.actualizar_pena_horas
+DELIMITER //
+CREATE DEFINER=`root`@`localhost` PROCEDURE `actualizar_pena_horas`(
+	IN `pieza` INT
+)
+BEGIN
+declare castigo int;
+set castigo=(select sum(pena_horas)
+from detencion
+where delincuente=pieza);
+
+update delincuente set horas_castigo=castigo
+where id=pieza;
+
+END//
+DELIMITER ;
+
+-- Volcando estructura para procedimiento seguridad.actualizar_total_delito
+DELIMITER //
+CREATE DEFINER=`root`@`localhost` PROCEDURE `actualizar_total_delito`(
+	IN `id_delito` INT
+)
+BEGIN
+
+declare detenciones int;
+set detenciones=(select count(*) from detencion where delito=id_delito);
+
+
+update delito set total=detenciones
+where id=id_delito;
+
+END//
+DELIMITER ;
+
+-- Volcando estructura para procedimiento seguridad.actualizar_total_delitos
+DELIMITER //
+CREATE DEFINER=`root`@`localhost` PROCEDURE `actualizar_total_delitos`(
+	IN `comis` INT
+
+)
+BEGIN
+
+declare delit int;
+set delit=(select count(*)
+			from comisaria join policia join detencion
+			on comisaria.id=policia.comisaria and policia.id=detencion.policia
+			where comisaria.id=comis);
+
+update comisaria set total_delitos=delit
+where id=comis;
+
+END//
+DELIMITER ;
+
 -- Volcando estructura para tabla seguridad.comisaria
 CREATE TABLE IF NOT EXISTS `comisaria` (
   `id` int(11) NOT NULL,
@@ -27,8 +100,8 @@ CREATE TABLE IF NOT EXISTS `comisaria` (
 -- Volcando datos para la tabla seguridad.comisaria: ~4 rows (aproximadamente)
 /*!40000 ALTER TABLE `comisaria` DISABLE KEYS */;
 INSERT INTO `comisaria` (`id`, `nombre`, `total_delitos`) VALUES
-	(1, 'Vallecas', 0),
-	(2, 'Carabanchel', 0),
+	(1, 'Vallecas', 2),
+	(2, 'Carabanchel', 1),
 	(3, 'Coslada', 0),
 	(4, 'Vicálvaro', 0);
 /*!40000 ALTER TABLE `comisaria` ENABLE KEYS */;
@@ -48,8 +121,8 @@ CREATE TABLE IF NOT EXISTS `delincuente` (
 /*!40000 ALTER TABLE `delincuente` DISABLE KEYS */;
 INSERT INTO `delincuente` (`id`, `nombre`, `horas_castigo`, `nacionalidad`) VALUES
 	(1, 'El vaquilla', 0, 1),
-	(2, 'El Torete', 0, 1),
-	(3, 'El Dioni', 0, 1),
+	(2, 'El Torete', 13, 1),
+	(3, 'El Dioni', 5, 1),
 	(4, 'M.Rajoy', 0, 1),
 	(5, 'Laurent', 0, 2);
 /*!40000 ALTER TABLE `delincuente` ENABLE KEYS */;
@@ -65,7 +138,7 @@ CREATE TABLE IF NOT EXISTS `delito` (
 -- Volcando datos para la tabla seguridad.delito: ~2 rows (aproximadamente)
 /*!40000 ALTER TABLE `delito` DISABLE KEYS */;
 INSERT INTO `delito` (`id`, `tipo`, `total`) VALUES
-	(1, 'Tenencia de armas', 0),
+	(1, 'Tenencia de armas', 3),
 	(2, 'Apropiación de fondos', 0);
 /*!40000 ALTER TABLE `delito` ENABLE KEYS */;
 
@@ -93,6 +166,22 @@ INSERT INTO `detencion` (`policia`, `delito`, `delincuente`, `pena_horas`, `id`)
 	(1, 1, 2, 9, 3);
 /*!40000 ALTER TABLE `detencion` ENABLE KEYS */;
 
+-- Volcando estructura para función seguridad.detenciones_policia
+DELIMITER //
+CREATE DEFINER=`root`@`localhost` FUNCTION `detenciones_policia`(
+	`id_poli` INT
+) RETURNS int(11)
+BEGIN
+
+declare det int;
+set det=(select count(*)
+from detencion
+where policia=id_poli);
+return det;
+
+END//
+DELIMITER ;
+
 -- Volcando estructura para tabla seguridad.nacion
 CREATE TABLE IF NOT EXISTS `nacion` (
   `id` int(11) NOT NULL,
@@ -104,7 +193,7 @@ CREATE TABLE IF NOT EXISTS `nacion` (
 -- Volcando datos para la tabla seguridad.nacion: ~4 rows (aproximadamente)
 /*!40000 ALTER TABLE `nacion` DISABLE KEYS */;
 INSERT INTO `nacion` (`id`, `nombre`, `total_delitos`) VALUES
-	(1, 'España', 0),
+	(1, 'España', 3),
 	(2, 'Francia', 0),
 	(3, 'Italia', 0),
 	(4, 'Portugal', 0);
