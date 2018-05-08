@@ -197,6 +197,22 @@ INSERT INTO `ganador` (`ciclista`) VALUES
 	(4);
 /*!40000 ALTER TABLE `ganador` ENABLE KEYS */;
 
+-- Volcando estructura para procedimiento velocipedos.insertar_nacion_gana
+DELIMITER //
+CREATE DEFINER=`root`@`localhost` PROCEDURE `insertar_nacion_gana`()
+BEGIN
+
+declare winner int;
+set winner=(select id
+				from nacion
+				where tiempo_total=(select min(tiempo_total)
+										from nacion));
+
+insert naciongana values (winner);
+
+END//
+DELIMITER ;
+
 -- Volcando estructura para tabla velocipedos.nacion
 CREATE TABLE IF NOT EXISTS `nacion` (
   `id` int(11) NOT NULL,
@@ -222,6 +238,8 @@ CREATE TABLE IF NOT EXISTS `naciongana` (
 
 -- Volcando datos para la tabla velocipedos.naciongana: ~0 rows (aproximadamente)
 /*!40000 ALTER TABLE `naciongana` DISABLE KEYS */;
+INSERT INTO `naciongana` (`nacion`) VALUES
+	(3);
 /*!40000 ALTER TABLE `naciongana` ENABLE KEYS */;
 
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
